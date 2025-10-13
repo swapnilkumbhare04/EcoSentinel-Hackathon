@@ -1,0 +1,20 @@
+EcoSentinel_Hackathon/
+│
+├── .gitignore              # Git la kontya files ignore karaychya he sangto
+├── requirements.txt        # Project chya saglya libraries chi list
+├── README.md               # Project baddal mahiti (optional pan changli practice)
+├── app.py                  # Aapla main Streamlit app (UI aani saglyanna jodnyacha kaam)
+├── config.py               # Saglya settings ekach thikani (e.g., model path)
+│
+├── models/
+│   └── yolov8n.pt          # Ithe aapn download kelela YOLO model thevu
+│
+├── sample_data/
+│   └── sample_video.mp4    # Ithe test karayla lagnare videos thevu
+│
+└── src/
+    ├── __init__.py         # Ha folder ek Python package ahe he sangnyasathi (empty theva)
+    ├── detector.py         # Fakt animal detection cha code (YOLOv8)
+    ├── tracker.py          # Animal la track karne aani path predict karnyacha logic
+    ├── geofence.py         # Geofence define karne aani threat analyze karnyacha code
+    └── visualizer.py       # Video frame var boxes, lines, geofence draw karnyacha code
