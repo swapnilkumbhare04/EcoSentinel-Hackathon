@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import cv2
-
+#edit for sayukta
 st.title("✅ EcoSentinel Setup Successful!")
 
 st.write("Congratulations! Your environment is working correctly.")
