@@ -26,6 +26,10 @@ def update_track(detections):
         if len(track_history[track_id]) > 20: 
             track_history[track_id].pop(0)
 
+from config import PREDICTION_STEPS, SMOOTHING_WINDOW_SIZE
+import numpy as np
+# ... (track_history and update_track are the same) ...
+
 def predict_future_path(track_id=0):
     """
     Predicts the future path using the average velocity over the last N points (Smoothing).
@@ -33,45 +37,40 @@ def predict_future_path(track_id=0):
     history = track_history.get(track_id, [])
     predicted_path = []
     
-    # Needs at least 2 points to calculate velocity
+    # --- FIX: Prediction should only start if there are enough points ---
+    # At least 2 points are needed for ANY prediction
     if len(history) < 2:
         return []
 
-    # --- CORE REFINEMENT LOGIC (Smoothing) ---
-    
-    # 1. Get the points for smoothing (use last SMOOTHING_WINDOW_SIZE points)
-    # The minimum of history size or the window size
-    smooth_points = np.array(history[-SMOOTHING_WINDOW_SIZE:]) 
+    # 1. Determine points for smoothing (Use the available history, or the window size)
+    # This ensures we use all available points if history is smaller than the window
+    n_points = min(len(history), SMOOTHING_WINDOW_SIZE)
+    smooth_points = np.array(history[-n_points:]) 
 
     # 2. Calculate Average Velocity
-    if len(smooth_points) < 2:
-        return [] # Safety check
-
-    # Calculate difference between consecutive points (Delta_X, Delta_Y)
     delta_points = smooth_points[1:] - smooth_points[:-1]
     
-    # Calculate the AVERAGE velocity vector from all delta points
+    # Calculate the AVERAGE velocity vector
     average_velocity_vector = np.mean(delta_points, axis=0)
     
     # If the average velocity is nearly zero (animal stopped), stop prediction
-    if np.linalg.norm(average_velocity_vector) < 1.0: # 1.0 is a small threshold
+    if np.linalg.norm(average_velocity_vector) < 1.0: 
         return []
 
-    # 3. Linear Prediction (Starting from the very last known point)
+    # 3. Linear Prediction 
     current_point = np.array(history[-1])
     
     # Predict PREDICTION_STEPS number of points
     for _ in range(PREDICTION_STEPS):
-        # Predict the next point based on average velocity
         next_point = current_point + average_velocity_vector
         
         # Add the new point (must be tuple of integers for OpenCV drawing)
         predicted_path.append( (int(next_point[0]), int(next_point[1])) )
         
-        # Update current_point for the next iteration
         current_point = next_point
         
     return predicted_path
+
 
 # --- Quick Test Section ---
 if __name__ == '_main': # <-- __name_ la main madhe badalle

@@ -24,10 +24,10 @@ SMOOTHING_WINDOW_SIZE = 5
 # (x, y) coordinates for the safety zone (normalized to 0-1000 for simplicity initially)
 # Note: These need to be scaled to actual video resolution later.
 GEOFENCE_COORDS = [
-    (100, 100),
-    (900, 100),
-    (900, 700),
-    (100, 700)
+    (200, 300),
+    (700, 300),
+    (700, 600),
+    (200, 600)
 ]
 # # --- 5. Wildlife Filtering ---
 # # COCO dataset classes to ignore (Person is ID 0)
